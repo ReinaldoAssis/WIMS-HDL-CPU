@@ -23,15 +23,14 @@ module ls74194_tb;
     initial begin
         // Test vector 1
         p = 4'b1010; s = 2'b00; sir = 1'b0; sil = 1'b0; clear_n = 1'b0;
-        #10;
 
         clk = 1'b0;
 
-        #(5);
+        #5;
 
         clk = 1'b1;
 
-        #(5);
+        #5;
 
         if (q !== 4'b0000) begin
             $display("Test failed: Clear Operation failed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. Expected q=%b, got q=%b", clk, clear_n, s, p, sil, sir, 4'b0000, q);
@@ -41,15 +40,14 @@ module ls74194_tb;
 
         // Test vector 7
         p = 4'b1010; s = 2'b11; sir = 1'b0; sil = 1'b0; clear_n = 1'b1;
-        #10;
 
         clk = 1'b0;
 
-        #(5);
+        #5;
 
         clk = 1'b1;
 
-        #(5);
+        #5;
 
         if (q !== 4'b1010) begin
             $display("Test failed: Load Operation failed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. Expected q=%b, got q=%b", clk, clear_n, s, p, sil, sir, 4'b1010, q);
@@ -58,16 +56,15 @@ module ls74194_tb;
         end
 
         // Test vector 13
-        p = 4'b1010; s = 2'b01; sir = 1'b0; sil = 1'b0; clear_n = 1'b1;
-        #10;
+        s = 2'b01; sir = 1'b0; sil = 1'b0; clear_n = 1'b1;
 
         clk = 1'b0;
 
-        #(5);
+        #5;
 
         clk = 1'b1;
 
-        #(5);
+        #5;
 
         if (q !== 4'b0101) begin
             $display("Test failed: Shift Right Operation failed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. Expected q=%b, got q=%b", clk, clear_n, s, p, sil, sir, 4'b0101, q);
@@ -76,37 +73,35 @@ module ls74194_tb;
         end
 
         // Test vector 19
-        p = 4'b1010; s = 2'b10; sir = 1'b0; sil = 1'b1; clear_n = 1'b1;
-        #10;
+        s = 2'b10; sir = 1'b0; sil = 1'b1; clear_n = 1'b1;
 
         clk = 1'b0;
 
-        #(10);
+        #5;
 
         clk = 1'b1;
 
-        #(10);
+        #5;
 
-        if (q !== 4'b0101) begin
-            $display("Test failed: Shift Left Operation failed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. Expected q=%b, got q=%b", clk, clear_n, s, p, sil, sir, 4'b0101, q);
+        if (q !== 4'b1011) begin
+            $display("Test failed: Shift Left Operation failed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. Expected q=%b, got q=%b", clk, clear_n, s, p, sil, sir, 4'b1011, q);
         end else begin
             $display("Test passed: Shift Left Operation passed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. q=%b", clk, clear_n, s, p, sil, sir, q);
         end
 
         // Test vector 25
-        p = 4'b1010; s = 2'b00; sir = 1'b0; sil = 1'b0; clear_n = 1'b1;
-        #10;
+        s = 2'b00; sir = 1'b0; sil = 1'b0; clear_n = 1'b1;
 
         clk = 1'b0;
 
-        #(5);
+        #5;
 
         clk = 1'b1;
 
-        #(5);
+        #5;
 
-        if (q !== 4'b1010) begin
-            $display("Test failed: Hold Operation failed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. Expected q=%b, got q=%b", clk, clear_n, s, p, sil, sir, 4'b1010, q);
+        if (q !== 4'b1011) begin
+            $display("Test failed: Hold Operation failed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. Expected q=%b, got q=%b", clk, clear_n, s, p, sil, sir, 4'b1011, q);
         end else begin
             $display("Test passed: Hold Operation passed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. q=%b", clk, clear_n, s, p, sil, sir, q);
         end

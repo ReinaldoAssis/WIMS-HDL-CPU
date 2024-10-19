@@ -92,6 +92,7 @@ class VerilogTestbench:
         self.golden_model = None
         self.current_inputs = {}
         self.current_test_name = "Unnamed Test"
+        self.auto_wait = True
         self._parse_module()
 
     def _parse_module(self):
@@ -188,12 +189,13 @@ class VerilogTestbench:
                     assignments = [f"{name} = {value};" for name, value in values.items()]
                     f.write(f"        // Test vector {i + 1}\n")
                     f.write("        " + " ".join(assignments) + "\n")
-                    f.write(f"        #10;\n")
+                    if self.auto_wait:
+                        f.write(f"        #10;\n")
                 elif action == 'drive':
                     name, value = list(values.items())[0]
                     f.write(f"        {name} = {value};\n")
                 elif action == 'wait':
-                    f.write(f"        #({values});\n")
+                    f.write(f"        #{int(values)};\n")
                 elif action == 'assert':
                     conditions = [f"{name} !== {value}" for name, value in values.items()]
                     f.write(f"        if ({' || '.join(conditions)}) begin\n")
@@ -338,6 +340,7 @@ def basic_tests(tb_dir):
 
     # Testbench for ls74194 (4-Bit Bidirectional Universal Shift Register)
     tb_74194 = create_testbench(os.path.join(os.path.dirname(tb_dir), "ls74194.v"))
+    tb_74194.auto_wait = False
 
     # Test case 1: Clear operation
     tb_74194.test_name("Clear Operation")
@@ -359,7 +362,7 @@ def basic_tests(tb_dir):
 
     # Test case 3: Shift right operation
     tb_74194.test_name("Shift Right Operation")
-    tb_74194.set_inputs(p="4'b1010", s="2'b01", sir="1'b0", sil="1'b0", clear_n="1'b1")
+    tb_74194.set_inputs(s="2'b01", sir="1'b0", sil="1'b0", clear_n="1'b1")
     tb_74194.drive_signal("clk", "1'b0")
     tb_74194.wait(5)
     tb_74194.drive_signal("clk", "1'b1")
@@ -368,21 +371,21 @@ def basic_tests(tb_dir):
 
     # Test case 4: Shift left operation
     tb_74194.test_name("Shift Left Operation")
-    tb_74194.set_inputs(p="4'b1010", s="2'b10", sir="1'b0", sil="1'b1", clear_n="1'b1")
+    tb_74194.set_inputs(s="2'b10", sir="1'b0", sil="1'b1", clear_n="1'b1")
     tb_74194.drive_signal("clk", "1'b0")
-    tb_74194.wait(10)
+    tb_74194.wait(5)
     tb_74194.drive_signal("clk", "1'b1")
-    tb_74194.wait(10)
-    tb_74194.assert_outputs(q="4'b0101")
+    tb_74194.wait(5)
+    tb_74194.assert_outputs(q="4'b1011")
 
     # Test case 5: Hold operation
     tb_74194.test_name("Hold Operation")
-    tb_74194.set_inputs(p="4'b1010", s="2'b00", sir="1'b0", sil="1'b0", clear_n="1'b1")
+    tb_74194.set_inputs(s="2'b00", sir="1'b0", sil="1'b0", clear_n="1'b1")
     tb_74194.drive_signal("clk", "1'b0")
     tb_74194.wait(5)
     tb_74194.drive_signal("clk", "1'b1")
     tb_74194.wait(5)
-    tb_74194.assert_outputs(q="4'b1010")
+    tb_74194.assert_outputs(q="4'b1011")
 
     tb_74194.output_verilog(os.path.join(tb_dir, "ls74194_tb.v"))
 
