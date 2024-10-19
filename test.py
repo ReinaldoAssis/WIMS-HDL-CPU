@@ -197,7 +197,7 @@ class VerilogTestbench:
                 elif action == 'assert':
                     conditions = [f"{name} !== {value}" for name, value in values.items()]
                     f.write(f"        if ({' || '.join(conditions)}) begin\n")
-                    f.write(f'            $display("{test_name} failed for ')
+                    f.write(f'            $display("Test failed: {test_name} failed for ')
                     f.write(", ".join([f"{name}=%b" for name in self.inputs.keys()]))
                     f.write(f'. Expected ')
                     f.write(", ".join([f"{name}=%b" for name in self.outputs.keys()]))
@@ -211,7 +211,7 @@ class VerilogTestbench:
                     f.write(", ".join([name for name in self.outputs.keys()]))
                     f.write(");\n")
                     f.write("        end else begin\n")
-                    f.write(f'            $display("{test_name} passed for ')
+                    f.write(f'            $display("Test passed: {test_name} passed for ')
                     f.write(", ".join([f"{name}=%b" for name in self.inputs.keys()]))
                     f.write(f'. {", ".join([f"{name}=%b" for name in self.outputs.keys()])}", ')
                     f.write(", ".join([name for name in self.inputs.keys()]))
