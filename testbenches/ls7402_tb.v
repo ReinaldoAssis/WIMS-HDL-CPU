@@ -18,9 +18,9 @@ module ls7402_tb;
         #10;
 
         if (y !== 4'b1100) begin
-            $display("Test failed for a=%b, b=%b. Expected y=%b, got y=%b", a, b, 4'b1100, y);
+            $display("Unnamed Test failed for a=%b, b=%b. Expected y=%b, got y=%b", a, b, 4'b1100, y);
         end else begin
-            $display("Test passed for a=%b, b=%b. y=%b", a, b, y);
+            $display("Unnamed Test passed for a=%b, b=%b. y=%b", a, b, y);
         end
 
         // Test vector 3
@@ -28,9 +28,9 @@ module ls7402_tb;
         #10;
 
         if (y !== 4'b0001) begin
-            $display("Test failed for a=%b, b=%b. Expected y=%b, got y=%b", a, b, 4'b0001, y);
+            $display("Unnamed Test failed for a=%b, b=%b. Expected y=%b, got y=%b", a, b, 4'b0001, y);
         end else begin
-            $display("Test passed for a=%b, b=%b. y=%b", a, b, y);
+            $display("Unnamed Test passed for a=%b, b=%b. y=%b", a, b, y);
         end
 
         $finish;

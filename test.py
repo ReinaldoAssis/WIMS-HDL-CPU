@@ -91,6 +91,7 @@ class VerilogTestbench:
         self.test_vectors = []
         self.golden_model = None
         self.current_inputs = {}
+        self.current_test_name = "Unnamed Test"
         self._parse_module()
 
     def _parse_module(self):
@@ -131,15 +132,18 @@ class VerilogTestbench:
                 raise ValueError(f"Input {name} not found in module {self.module_name}")
             parsed_inputs[name] = self.parse_input(value)
         self.current_inputs = parsed_inputs
-        self.test_vectors.append(('input', kwargs))  # Keep original values for Verilog output
+        self.test_vectors.append(('input', kwargs, self.current_test_name))
 
     def drive_signal(self, signal_name, value):
         if signal_name not in self.inputs:
             raise ValueError(f"Signal {signal_name} not found in module inputs")
-        self.test_vectors.append(('drive', {signal_name: value}))
+        self.test_vectors.append(('drive', {signal_name: value}, self.current_test_name))
 
     def wait(self, time):
-        self.test_vectors.append(('wait', time))
+        self.test_vectors.append(('wait', time, self.current_test_name))
+
+    def test_name(self, name):
+        self.current_test_name = name
 
     def assert_outputs(self, **kwargs):
         if self.golden_model and not kwargs:
@@ -152,7 +156,8 @@ class VerilogTestbench:
         for name, value in kwargs.items():
             if name not in self.outputs:
                 raise ValueError(f"Output {name} not found in module {self.module_name}")
-        self.test_vectors.append(('assert', kwargs))
+        self.test_vectors.append(('assert', kwargs, self.current_test_name))
+        self.current_test_name = "Unnamed Test"  # Reset the test name
 
     def output_verilog(self, output_file):
         with open(output_file, 'w') as f:
@@ -174,7 +179,11 @@ class VerilogTestbench:
 
             # Write test vectors
             f.write("    initial begin\n")
-            for i, (action, values) in enumerate(self.test_vectors):
+            for i, vector in enumerate(self.test_vectors):
+                action = vector[0]
+                values = vector[1]
+                test_name = vector[2] if len(vector) > 2 else "Unnamed Test"
+
                 if action == 'input':
                     assignments = [f"{name} = {value};" for name, value in values.items()]
                     f.write(f"        // Test vector {i + 1}\n")
@@ -188,7 +197,7 @@ class VerilogTestbench:
                 elif action == 'assert':
                     conditions = [f"{name} !== {value}" for name, value in values.items()]
                     f.write(f"        if ({' || '.join(conditions)}) begin\n")
-                    f.write(f'            $display("Test failed for ')
+                    f.write(f'            $display("{test_name} failed for ')
                     f.write(", ".join([f"{name}=%b" for name in self.inputs.keys()]))
                     f.write(f'. Expected ')
                     f.write(", ".join([f"{name}=%b" for name in self.outputs.keys()]))
@@ -202,7 +211,7 @@ class VerilogTestbench:
                     f.write(", ".join([name for name in self.outputs.keys()]))
                     f.write(");\n")
                     f.write("        end else begin\n")
-                    f.write(f'            $display("Test passed for ')
+                    f.write(f'            $display("{test_name} passed for ')
                     f.write(", ".join([f"{name}=%b" for name in self.inputs.keys()]))
                     f.write(f'. {", ".join([f"{name}=%b" for name in self.outputs.keys()])}", ')
                     f.write(", ".join([name for name in self.inputs.keys()]))
@@ -331,6 +340,7 @@ def basic_tests(tb_dir):
     tb_74194 = create_testbench(os.path.join(os.path.dirname(tb_dir), "ls74194.v"))
 
     # Test case 1: Clear operation
+    tb_74194.test_name("Clear Operation")
     tb_74194.set_inputs(p="4'b1010", s="2'b00", sir="1'b0", sil="1'b0", clear_n="1'b0")
     tb_74194.drive_signal("clk", "1'b0")
     tb_74194.wait(5)
@@ -339,6 +349,7 @@ def basic_tests(tb_dir):
     tb_74194.assert_outputs(q="4'b0000")
 
     # Test case 2: Load operation
+    tb_74194.test_name("Load Operation")
     tb_74194.set_inputs(p="4'b1010", s="2'b11", sir="1'b0", sil="1'b0", clear_n="1'b1")
     tb_74194.drive_signal("clk", "1'b0")
     tb_74194.wait(5)
@@ -347,6 +358,7 @@ def basic_tests(tb_dir):
     tb_74194.assert_outputs(q="4'b1010")
 
     # Test case 3: Shift right operation
+    tb_74194.test_name("Shift Right Operation")
     tb_74194.set_inputs(p="4'b1010", s="2'b01", sir="1'b0", sil="1'b0", clear_n="1'b1")
     tb_74194.drive_signal("clk", "1'b0")
     tb_74194.wait(5)
@@ -355,6 +367,7 @@ def basic_tests(tb_dir):
     tb_74194.assert_outputs(q="4'b0101")
 
     # Test case 4: Shift left operation
+    tb_74194.test_name("Shift Left Operation")
     tb_74194.set_inputs(p="4'b1010", s="2'b10", sir="1'b0", sil="1'b1", clear_n="1'b1")
     tb_74194.drive_signal("clk", "1'b0")
     tb_74194.wait(5)
@@ -363,6 +376,7 @@ def basic_tests(tb_dir):
     tb_74194.assert_outputs(q="4'b0101")
 
     # Test case 5: Hold operation
+    tb_74194.test_name("Hold Operation")
     tb_74194.set_inputs(p="4'b1010", s="2'b00", sir="1'b0", sil="1'b0", clear_n="1'b1")
     tb_74194.drive_signal("clk", "1'b0")
     tb_74194.wait(5)

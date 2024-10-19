@@ -22,9 +22,9 @@ module ls74157_tb;
         #10;
 
         if (y !== 4'b1010) begin
-            $display("Test failed for a=%b, b=%b, select=%b, enable_n=%b. Expected y=%b, got y=%b", a, b, select, enable_n, 4'b1010, y);
+            $display("Unnamed Test failed for a=%b, b=%b, select=%b, enable_n=%b. Expected y=%b, got y=%b", a, b, select, enable_n, 4'b1010, y);
         end else begin
-            $display("Test passed for a=%b, b=%b, select=%b, enable_n=%b. y=%b", a, b, select, enable_n, y);
+            $display("Unnamed Test passed for a=%b, b=%b, select=%b, enable_n=%b. y=%b", a, b, select, enable_n, y);
         end
 
         // Test vector 3
@@ -32,9 +32,9 @@ module ls74157_tb;
         #10;
 
         if (y !== 4'b0101) begin
-            $display("Test failed for a=%b, b=%b, select=%b, enable_n=%b. Expected y=%b, got y=%b", a, b, select, enable_n, 4'b0101, y);
+            $display("Unnamed Test failed for a=%b, b=%b, select=%b, enable_n=%b. Expected y=%b, got y=%b", a, b, select, enable_n, 4'b0101, y);
         end else begin
-            $display("Test passed for a=%b, b=%b, select=%b, enable_n=%b. y=%b", a, b, select, enable_n, y);
+            $display("Unnamed Test passed for a=%b, b=%b, select=%b, enable_n=%b. y=%b", a, b, select, enable_n, y);
         end
 
         // Test vector 5
@@ -42,9 +42,9 @@ module ls74157_tb;
         #10;
 
         if (y !== 4'b0000) begin
-            $display("Test failed for a=%b, b=%b, select=%b, enable_n=%b. Expected y=%b, got y=%b", a, b, select, enable_n, 4'b0000, y);
+            $display("Unnamed Test failed for a=%b, b=%b, select=%b, enable_n=%b. Expected y=%b, got y=%b", a, b, select, enable_n, 4'b0000, y);
         end else begin
-            $display("Test passed for a=%b, b=%b, select=%b, enable_n=%b. y=%b", a, b, select, enable_n, y);
+            $display("Unnamed Test passed for a=%b, b=%b, select=%b, enable_n=%b. y=%b", a, b, select, enable_n, y);
         end
 
         // Test vector 7
@@ -52,9 +52,9 @@ module ls74157_tb;
         #10;
 
         if (y !== 4'b0000) begin
-            $display("Test failed for a=%b, b=%b, select=%b, enable_n=%b. Expected y=%b, got y=%b", a, b, select, enable_n, 4'b0000, y);
+            $display("Unnamed Test failed for a=%b, b=%b, select=%b, enable_n=%b. Expected y=%b, got y=%b", a, b, select, enable_n, 4'b0000, y);
         end else begin
-            $display("Test passed for a=%b, b=%b, select=%b, enable_n=%b. y=%b", a, b, select, enable_n, y);
+            $display("Unnamed Test passed for a=%b, b=%b, select=%b, enable_n=%b. y=%b", a, b, select, enable_n, y);
         end
 
         $finish;

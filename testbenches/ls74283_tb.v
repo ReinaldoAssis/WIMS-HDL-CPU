@@ -22,9 +22,9 @@ module ls74283_tb;
         #10;
 
         if (sum !== 4'b1111 || cout !== 1'b0) begin
-            $display("Test failed for a=%b, b=%b, cin=%b. Expected sum=%b, cout=%b, got sum=%b, cout=%b", a, b, cin, 4'b1111, 1'b0, sum, cout);
+            $display("Unnamed Test failed for a=%b, b=%b, cin=%b. Expected sum=%b, cout=%b, got sum=%b, cout=%b", a, b, cin, 4'b1111, 1'b0, sum, cout);
         end else begin
-            $display("Test passed for a=%b, b=%b, cin=%b. sum=%b, cout=%b", a, b, cin, sum, cout);
+            $display("Unnamed Test passed for a=%b, b=%b, cin=%b. sum=%b, cout=%b", a, b, cin, sum, cout);
         end
 
         // Test vector 3
@@ -32,9 +32,9 @@ module ls74283_tb;
         #10;
 
         if (sum !== 4'b0001 || cout !== 1'b1) begin
-            $display("Test failed for a=%b, b=%b, cin=%b. Expected sum=%b, cout=%b, got sum=%b, cout=%b", a, b, cin, 4'b0001, 1'b1, sum, cout);
+            $display("Unnamed Test failed for a=%b, b=%b, cin=%b. Expected sum=%b, cout=%b, got sum=%b, cout=%b", a, b, cin, 4'b0001, 1'b1, sum, cout);
         end else begin
-            $display("Test passed for a=%b, b=%b, cin=%b. sum=%b, cout=%b", a, b, cin, sum, cout);
+            $display("Unnamed Test passed for a=%b, b=%b, cin=%b. sum=%b, cout=%b", a, b, cin, sum, cout);
         end
 
         $finish;
