@@ -133,6 +133,14 @@ class VerilogTestbench:
         self.current_inputs = parsed_inputs
         self.test_vectors.append(('input', kwargs))  # Keep original values for Verilog output
 
+    def drive_signal(self, signal_name, value):
+        if signal_name not in self.inputs:
+            raise ValueError(f"Signal {signal_name} not found in module inputs")
+        self.test_vectors.append(('drive', {signal_name: value}))
+
+    def wait(self, time):
+        self.test_vectors.append(('wait', time))
+
     def assert_outputs(self, **kwargs):
         if self.golden_model and not kwargs:
             # Use golden model to generate expected outputs
@@ -171,7 +179,12 @@ class VerilogTestbench:
                     assignments = [f"{name} = {value};" for name, value in values.items()]
                     f.write(f"        // Test vector {i + 1}\n")
                     f.write("        " + " ".join(assignments) + "\n")
-                    f.write("        #10;\n")
+                    f.write(f"        #10;\n")
+                elif action == 'drive':
+                    name, value = list(values.items())[0]
+                    f.write(f"        {name} = {value};\n")
+                elif action == 'wait':
+                    f.write(f"        #({values});\n")
                 elif action == 'assert':
                     conditions = [f"{name} !== {value}" for name, value in values.items()]
                     f.write(f"        if ({' || '.join(conditions)}) begin\n")
@@ -318,23 +331,43 @@ def basic_tests(tb_dir):
     tb_74194 = create_testbench(os.path.join(os.path.dirname(tb_dir), "ls74194.v"))
 
     # Test case 1: Clear operation
-    tb_74194.set_inputs(p="4'b1010", s="2'b00", sir="1'b0", sil="1'b0", clk="1'b1", clear_n="1'b0")
+    tb_74194.set_inputs(p="4'b1010", s="2'b00", sir="1'b0", sil="1'b0", clear_n="1'b0")
+    tb_74194.drive_signal("clk", "1'b0")
+    tb_74194.wait(5)
+    tb_74194.drive_signal("clk", "1'b1")
+    tb_74194.wait(5)
     tb_74194.assert_outputs(q="4'b0000")
 
     # Test case 2: Load operation
-    tb_74194.set_inputs(p="4'b1010", s="2'b11", sir="1'b0", sil="1'b0", clk="1'b1", clear_n="1'b1")
+    tb_74194.set_inputs(p="4'b1010", s="2'b11", sir="1'b0", sil="1'b0", clear_n="1'b1")
+    tb_74194.drive_signal("clk", "1'b0")
+    tb_74194.wait(5)
+    tb_74194.drive_signal("clk", "1'b1")
+    tb_74194.wait(5)
     tb_74194.assert_outputs(q="4'b1010")
 
     # Test case 3: Shift right operation
-    tb_74194.set_inputs(p="4'b1010", s="2'b01", sir="1'b0", sil="1'b0", clk="1'b1", clear_n="1'b1")
+    tb_74194.set_inputs(p="4'b1010", s="2'b01", sir="1'b0", sil="1'b0", clear_n="1'b1")
+    tb_74194.drive_signal("clk", "1'b0")
+    tb_74194.wait(5)
+    tb_74194.drive_signal("clk", "1'b1")
+    tb_74194.wait(5)
     tb_74194.assert_outputs(q="4'b0101")
 
     # Test case 4: Shift left operation
-    tb_74194.set_inputs(p="4'b1010", s="2'b10", sir="1'b0", sil="1'b1", clk="1'b1", clear_n="1'b1")
+    tb_74194.set_inputs(p="4'b1010", s="2'b10", sir="1'b0", sil="1'b1", clear_n="1'b1")
+    tb_74194.drive_signal("clk", "1'b0")
+    tb_74194.wait(5)
+    tb_74194.drive_signal("clk", "1'b1")
+    tb_74194.wait(5)
     tb_74194.assert_outputs(q="4'b0101")
 
     # Test case 5: Hold operation
-    tb_74194.set_inputs(p="4'b1010", s="2'b00", sir="1'b0", sil="1'b0", clk="1'b1", clear_n="1'b1")
+    tb_74194.set_inputs(p="4'b1010", s="2'b00", sir="1'b0", sil="1'b0", clear_n="1'b1")
+    tb_74194.drive_signal("clk", "1'b0")
+    tb_74194.wait(5)
+    tb_74194.drive_signal("clk", "1'b1")
+    tb_74194.wait(5)
     tb_74194.assert_outputs(q="4'b1010")
 
     tb_74194.output_verilog(os.path.join(tb_dir, "ls74194_tb.v"))
