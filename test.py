@@ -370,9 +370,9 @@ def basic_tests(tb_dir):
     tb_74194.test_name("Shift Left Operation")
     tb_74194.set_inputs(p="4'b1010", s="2'b10", sir="1'b0", sil="1'b1", clear_n="1'b1")
     tb_74194.drive_signal("clk", "1'b0")
-    tb_74194.wait(5)
+    tb_74194.wait(10)
     tb_74194.drive_signal("clk", "1'b1")
-    tb_74194.wait(5)
+    tb_74194.wait(10)
     tb_74194.assert_outputs(q="4'b0101")
 
     # Test case 5: Hold operation

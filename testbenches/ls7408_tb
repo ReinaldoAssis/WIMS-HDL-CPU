@@ -7,47 +7,47 @@
 :vpi_module "D:\Programming\iverilog\lib\ivl\vhdl_textio.vpi";
 :vpi_module "D:\Programming\iverilog\lib\ivl\v2005_math.vpi";
 :vpi_module "D:\Programming\iverilog\lib\ivl\va_math.vpi";
-S_000002b82581bcc0 .scope module, "ls7408_tb" "ls7408_tb" 2 3;
+S_0000023edae5bcc0 .scope module, "ls7408_tb" "ls7408_tb" 2 3;
  .timescale -9 -12;
-v000002b8258661e0_0 .var "a", 3 0;
-v000002b825866280_0 .var "b", 3 0;
-v000002b825866320_0 .net "y", 3 0, L_000002b8258663c0;  1 drivers
-S_000002b82581be50 .scope module, "uut" "ls7408" 2 9, 3 4 0, S_000002b82581bcc0;
+v0000023edaea61e0_0 .var "a", 3 0;
+v0000023edaea6280_0 .var "b", 3 0;
+v0000023edaea6320_0 .net "y", 3 0, L_0000023edaea63c0;  1 drivers
+S_0000023edae5be50 .scope module, "uut" "ls7408" 2 9, 3 4 0, S_0000023edae5bcc0;
  .timescale 0 0;
     .port_info 0 /INPUT 4 "a";
     .port_info 1 /INPUT 4 "b";
     .port_info 2 /OUTPUT 4 "y";
-L_000002b8258663c0 .functor AND 4, v000002b8258661e0_0, v000002b825866280_0, C4<1111>, C4<1111>;
-v000002b825832c80_0 .net "a", 3 0, v000002b8258661e0_0;  1 drivers
-v000002b825833010_0 .net "b", 3 0, v000002b825866280_0;  1 drivers
-v000002b825866140_0 .net "y", 3 0, L_000002b8258663c0;  alias, 1 drivers
-    .scope S_000002b82581bcc0;
+L_0000023edaea63c0 .functor AND 4, v0000023edaea61e0_0, v0000023edaea6280_0, C4<1111>, C4<1111>;
+v0000023edae72c80_0 .net "a", 3 0, v0000023edaea61e0_0;  1 drivers
+v0000023edae73010_0 .net "b", 3 0, v0000023edaea6280_0;  1 drivers
+v0000023edaea6140_0 .net "y", 3 0, L_0000023edaea63c0;  alias, 1 drivers
+    .scope S_0000023edae5bcc0;
 T_0 ;
     %pushi/vec4 10, 0, 4;
-    %store/vec4 v000002b8258661e0_0, 0, 4;
+    %store/vec4 v0000023edaea61e0_0, 0, 4;
     %pushi/vec4 12, 0, 4;
-    %store/vec4 v000002b825866280_0, 0, 4;
+    %store/vec4 v0000023edaea6280_0, 0, 4;
     %delay 10000, 0;
-    %load/vec4 v000002b825866320_0;
+    %load/vec4 v0000023edaea6320_0;
     %cmpi/ne 8, 0, 4;
     %jmp/0xz  T_0.0, 6;
-    %vpi_call 2 21 "$display", "Test failed: Unnamed Test failed for a=%b, b=%b. Expected y=%b, got y=%b", v000002b8258661e0_0, v000002b825866280_0, 4'b1000, v000002b825866320_0 {0 0 0};
+    %vpi_call 2 21 "$display", "Test failed: Unnamed Test failed for a=%b, b=%b. Expected y=%b, got y=%b", v0000023edaea61e0_0, v0000023edaea6280_0, 4'b1000, v0000023edaea6320_0 {0 0 0};
     %jmp T_0.1;
 T_0.0 ;
-    %vpi_call 2 23 "$display", "Test passed: Unnamed Test passed for a=%b, b=%b. y=%b", v000002b8258661e0_0, v000002b825866280_0, v000002b825866320_0 {0 0 0};
+    %vpi_call 2 23 "$display", "Test passed: Unnamed Test passed for a=%b, b=%b. y=%b", v0000023edaea61e0_0, v0000023edaea6280_0, v0000023edaea6320_0 {0 0 0};
 T_0.1 ;
     %pushi/vec4 15, 0, 4;
-    %store/vec4 v000002b8258661e0_0, 0, 4;
+    %store/vec4 v0000023edaea61e0_0, 0, 4;
     %pushi/vec4 5, 0, 4;
-    %store/vec4 v000002b825866280_0, 0, 4;
+    %store/vec4 v0000023edaea6280_0, 0, 4;
     %delay 10000, 0;
-    %load/vec4 v000002b825866320_0;
+    %load/vec4 v0000023edaea6320_0;
     %cmpi/ne 5, 0, 4;
     %jmp/0xz  T_0.2, 6;
-    %vpi_call 2 31 "$display", "Test failed: Unnamed Test failed for a=%b, b=%b. Expected y=%b, got y=%b", v000002b8258661e0_0, v000002b825866280_0, 4'b0101, v000002b825866320_0 {0 0 0};
+    %vpi_call 2 31 "$display", "Test failed: Unnamed Test failed for a=%b, b=%b. Expected y=%b, got y=%b", v0000023edaea61e0_0, v0000023edaea6280_0, 4'b0101, v0000023edaea6320_0 {0 0 0};
     %jmp T_0.3;
 T_0.2 ;
-    %vpi_call 2 33 "$display", "Test passed: Unnamed Test passed for a=%b, b=%b. y=%b", v000002b8258661e0_0, v000002b825866280_0, v000002b825866320_0 {0 0 0};
+    %vpi_call 2 33 "$display", "Test passed: Unnamed Test passed for a=%b, b=%b. y=%b", v0000023edaea61e0_0, v0000023edaea6280_0, v0000023edaea6320_0 {0 0 0};
 T_0.3 ;
     %vpi_call 2 36 "$finish" {0 0 0};
     %end;

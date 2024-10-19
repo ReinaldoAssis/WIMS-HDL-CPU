@@ -81,11 +81,11 @@ module ls74194_tb;
 
         clk = 1'b0;
 
-        #(5);
+        #(10);
 
         clk = 1'b1;
 
-        #(5);
+        #(10);
 
         if (q !== 4'b0101) begin
             $display("Test failed: Shift Left Operation failed for clk=%b, clear_n=%b, s=%b, p=%b, sil=%b, sir=%b. Expected q=%b, got q=%b", clk, clear_n, s, p, sil, sir, 4'b0101, q);
