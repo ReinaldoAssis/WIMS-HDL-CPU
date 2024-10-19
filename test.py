@@ -50,7 +50,11 @@ def run_testbench(testbench):
         print(f"{Fore.RED}[{testbench}] UUT file {uut_file} not found in testbench or parent directory{Style.RESET_ALL}")
         return False
     
-    compile_command = f"iverilog -o {testbench[:-2]} {uut_path} {testbench}"
+    # Find all Verilog files in the parent directory
+    verilog_files = [os.path.join(parent_dir, f) for f in os.listdir(parent_dir) if f.endswith('.v') and f != uut_file]
+    
+    # Compile command with all Verilog files
+    compile_command = f"iverilog -o {testbench[:-2]} {' '.join(verilog_files)} {uut_path} {testbench}"
     compile_result = subprocess.run(compile_command, shell=True, capture_output=True, text=True)
     
     if compile_result.returncode != 0:

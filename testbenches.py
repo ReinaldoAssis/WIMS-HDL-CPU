@@ -176,57 +176,127 @@ def basic_tests(tb_dir):
     tb_74283.output_verilog(os.path.join(tb_dir, "ls74283_tb.v"))
 
     # Testbench for RLS803 (8-bit Logical Shift Register)
-    def rls803_model(data_in, shift_amount, direction, clear_n):
-        if not clear_n:
-            return {"data_out": "8'b00000000"}
-        
-        # Handle both string and integer inputs
-        if isinstance(data_in, str):
-            data = int(data_in[2:], 2)
-        else:
-            data = data_in
-        
-        if isinstance(shift_amount, str):
-            shift = int(shift_amount[2:], 2)
-        else:
-            shift = shift_amount
-        
-        if isinstance(direction, str):
-            direction = int(direction[2:], 2)
-        
-        if direction == 1:  # Left shift
-            result = (data << shift) & 0xFF
-        else:  # Right shift
-            result = data >> shift
-        
-        return {"data_out": f"8'b{result:08b}"}
-
     tb_rls803 = create_testbench(os.path.join(os.path.dirname(tb_dir), "RLS803.v"))
-    tb_rls803.set_golden_model(rls803_model)
+    tb_rls803.auto_wait = False
 
-    # Test case 1: No shift
-    tb_rls803.test_name("No Shift")
-    tb_rls803.set_inputs(data_in="8'b10101010", shift_amount="3'b000", direction="1'b0", clear_n="1'b1")
-    tb_rls803.assert_outputs()
-
-    # Test case 2: Right shift by 2
-    tb_rls803.test_name("Right Shift by 2")
-    tb_rls803.set_inputs(data_in="8'b10101010", shift_amount="3'b010", direction="1'b0", clear_n="1'b1")
-    tb_rls803.assert_outputs()
-
-    # Test case 3: Left shift by 3
-    tb_rls803.test_name("Left Shift by 3")
-    tb_rls803.set_inputs(data_in="8'b10101010", shift_amount="3'b011", direction="1'b1", clear_n="1'b1")
-    tb_rls803.assert_outputs()
-
-    # Test case 4: Clear operation
+    
+    # Test case 1: Clear operation
     tb_rls803.test_name("Clear Operation")
     tb_rls803.set_inputs(data_in="8'b11111111", shift_amount="3'b000", direction="1'b0", clear_n="1'b0")
-    tb_rls803.assert_outputs()
+    tb_rls803.drive_signal("clk", "1'b0")
+    tb_rls803.wait(5)
+    tb_rls803.drive_signal("clk", "1'b1")
+    tb_rls803.wait(5)
+    tb_rls803.assert_outputs(data_out="8'b00000000")
 
-    # Test case 5: Maximum left shift
-    tb_rls803.test_name("Maximum Left Shift")
-    tb_rls803.set_inputs(data_in="8'b10101010", shift_amount="3'b111", direction="1'b1", clear_n="1'b1")
-    tb_rls803.assert_outputs()
+    # Test case 2: Load operation
+    tb_rls803.test_name("Load Operation")
+    tb_rls803.set_inputs(data_in="8'b10101010", shift_amount="3'b000", direction="1'b0", clear_n="1'b1")
+    tb_rls803.drive_signal("clk", "1'b0")
+    tb_rls803.wait(10)
+    tb_rls803.drive_signal("clk", "1'b1")
+    tb_rls803.wait(10)
+    tb_rls803.assert_outputs(data_out="8'b10101010")
 
+    
+
+    # Test case 3: Right shift by 2
+    tb_rls803.test_name("Right Shift by 2")
+    tb_rls803.set_inputs(shift_amount="3'b010", direction="1'b0", clear_n="1'b1")
+    tb_rls803.drive_signal("clk", "1'b0")
+    tb_rls803.wait(5)
+    tb_rls803.drive_signal("clk", "1'b1")
+    tb_rls803.wait(5)
+    tb_rls803.assert_outputs(data_out="8'b00101010")
+
+    # Test case 4: Left shift by 3
+    tb_rls803.test_name("Left Shift by 3")
+    tb_rls803.set_inputs(shift_amount="3'b011", direction="1'b1", clear_n="1'b1")
+    tb_rls803.drive_signal("clk", "1'b0")
+    tb_rls803.wait(5)
+    tb_rls803.drive_signal("clk", "1'b1")
+    tb_rls803.wait(5)
+    tb_rls803.assert_outputs(data_out="8'b01010000")
+
+    # Test case 5: Hold operation
+    tb_rls803.test_name("Hold Operation")
+    tb_rls803.set_inputs(shift_amount="3'b000", direction="1'b0", clear_n="1'b1")
+    tb_rls803.drive_signal("clk", "1'b0")
+    tb_rls803.wait(5)
+    tb_rls803.drive_signal("clk", "1'b1")
+    tb_rls803.wait(5)
+    tb_rls803.assert_outputs(data_out="8'b01010000")
+
+    # Generate the Verilog testbench file
     tb_rls803.output_verilog(os.path.join(tb_dir, "RLS803_tb.v"))
+
+    # Testbench for RS801 (8-bit Full Adder)
+    def rs801_model(a, b, cin):
+        result = a + b + cin
+        sum_result = result & 0xFF
+        cout = 1 if result > 255 else 0
+        return {"sum": f"8'b{sum_result:08b}", "cout": f"1'b{cout}"}
+
+    tb_rs801 = create_testbench(os.path.join(os.path.dirname(tb_dir), "RS801.v"))
+    tb_rs801.set_golden_model(rs801_model)
+
+    # Test case 1: Simple addition without carry
+    tb_rs801.test_name("Simple Addition")
+    tb_rs801.set_inputs(a="8'b00101010", b="8'b00010101", cin="1'b0")
+    tb_rs801.assert_outputs()
+
+    # Test case 2: Addition with carry in
+    tb_rs801.test_name("Addition with Carry In")
+    tb_rs801.set_inputs(a="8'b11110000", b="8'b00001111", cin="1'b1")
+    tb_rs801.assert_outputs()
+
+    # Test case 3: Addition resulting in carry out
+    tb_rs801.test_name("Addition with Carry Out")
+    tb_rs801.set_inputs(a="8'b11111111", b="8'b00000001", cin="1'b0")
+    tb_rs801.assert_outputs()
+
+    # Test case 4: Maximum value addition
+    tb_rs801.test_name("Maximum Value Addition")
+    tb_rs801.set_inputs(a="8'b11111111", b="8'b11111111", cin="1'b1")
+    tb_rs801.assert_outputs()
+
+    # Generate the Verilog testbench file
+    tb_rs801.output_verilog(os.path.join(tb_dir, "RS801_tb.v"))
+  
+    # Testbench for RM802 (8-bit 2-to-1 multiplexer)
+    def rm802_model(a, b, select, enable_n):
+        # Perform multiplexer operation
+        if enable_n:
+            result = 0
+        else:
+            result = b if select else a
+        # Convert result back to Verilog format string
+        return {"y": f"8'b{result:08b}"}
+
+    tb_rm802 = create_testbench(os.path.join(os.path.dirname(tb_dir), "RM802.v"))
+    tb_rm802.set_golden_model(rm802_model)
+    
+    # Test case 1: select = 0, enable_n = 0
+    tb_rm802.test_name("Select A")
+    tb_rm802.set_inputs(a="8'b10101010", b="8'b01010101", select="1'b0", enable_n="1'b0")
+    tb_rm802.assert_outputs()
+    
+    # Test case 2: select = 1, enable_n = 0
+    tb_rm802.test_name("Select B")
+    tb_rm802.set_inputs(a="8'b10101010", b="8'b01010101", select="1'b1", enable_n="1'b0")
+    tb_rm802.assert_outputs()
+    
+    # Test case 3: enable_n = 1 (output should be all zeros)
+    tb_rm802.test_name("Disabled Output")
+    tb_rm802.set_inputs(a="8'b10101010", b="8'b01010101", select="1'b0", enable_n="1'b1")
+    tb_rm802.assert_outputs()
+    
+    # Test case 4: Different input values
+    tb_rm802.test_name("Different Inputs")
+    tb_rm802.set_inputs(a="8'b11110000", b="8'b00001111", select="1'b0", enable_n="1'b0")
+    tb_rm802.assert_outputs()
+    
+    # Generate the Verilog testbench file
+    tb_rm802.output_verilog(os.path.join(tb_dir, "RM802_tb.v"))
+
+    
